@@ -1,7 +1,13 @@
-import pytest
+from fastapi.testclient import TestClient
+from main import app
 
-@pytest.mark.asyncio
-async def test_health_check(client):
-    response = await client.get("/")
+client = TestClient(app)
+
+def test_health_check():
+    response = client.get("/")
     assert response.status_code == 200
-    assert response.json() == {"message": "Hello World"}
+    assert response.json() == {
+        "name": "APP Name",
+        "version": "0.0.1",
+        "description": "Application description"
+    }

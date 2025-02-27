@@ -1,25 +1,31 @@
 import jwt
+import bcrypt
 from fastapi import HTTPException, Security
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from passlib.context import CryptContext
 from datetime import datetime, timezone, timedelta
 
 from dotenv import load_dotenv
 import os
 load_dotenv()
 
-
 class AuthHandler():
     security = HTTPBearer()
-    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
     secret = os.getenv("JWT_KEY", "aVeryComplexSecretKey")
 
     def get_password_hash(self, password):
-        print("get_password_hash")
-        return self.pwd_context.hash(password)
+        password = password.encode('utf-8')  # Convert string to bytes
+        # Generate a salt and hash the password
+        hashed_password = bcrypt.hashpw(password, bcrypt.gensalt())
+        return hashed_password
 
     def verify_password(self, plain_password, hashed_password):
-        return self.pwd_context.verify(plain_password, hashed_password)
+        plain_password = plain_password.encode('utf-8')
+        # hashed_password should come from your database or storage
+        hashed_password = hashed_password.encode('utf-8')
+        if bcrypt.checkpw(plain_password, hashed_password):
+            return True
+        else:
+            return False
 
     def encode_token(self, user):
         payload = {
@@ -28,7 +34,6 @@ class AuthHandler():
             "id": str(user.id),
             "email": user.email
         }
-        print(self.secret)
         return jwt.encode(
             payload,
             self.secret,
@@ -36,12 +41,8 @@ class AuthHandler():
         )
 
     def decode_token(self, token):
-        print("Decoding token")
-        print(token)
         try:
-            print(self.secret)
             payload = jwt.decode(token, self.secret, algorithms=['HS256'])
-            print(payload)
             return {
                 "id": payload['id'],
                 "email": payload['email']
