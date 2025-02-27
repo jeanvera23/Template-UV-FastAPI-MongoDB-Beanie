@@ -1,0 +1,15 @@
+[project]
+name = "homer-backend"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "bcrypt>=4.2.1",
+    "beanie>=1.29.0",
+    "fastapi[standard]>=0.115.8",
+    "logging>=0.4.9.6",
+    "passlib>=1.7.4",
+    "pyjwt>=2.10.1",
+    "pytest>=8.3.4",
+]

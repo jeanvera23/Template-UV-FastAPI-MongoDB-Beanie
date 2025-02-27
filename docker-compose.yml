@@ -1,0 +1,15 @@
+services:
+  app:
+    container_name: homer_backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8001:80"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    external: true
