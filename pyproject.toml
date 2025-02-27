@@ -1,5 +1,5 @@
 [project]
-name = "homer-backend"
+name = "fastapi-project"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
